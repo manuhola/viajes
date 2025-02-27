@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Planificador de Viajes</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family:'Raleway', sans-serif; 
+            background-color: #627184;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color:  #2a3c52;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header img {
+            height: 50px;
+            vertical-align: middle;
+        }
+        header h1 {
+            display: inline;
+            margin-left: 10px;
+            font-size: 36px;
+            vertical-align: middle;
+        }
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .options {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .options button {
+            background-color: #2a3c52;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .options button:hover {
+            background-color: #627184;
+        }
+        .form-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .form-section select,
+        .form-section input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .form-section label {
+            font-weight: bold;
+        }
+        #result {
+            background-color: #596677;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        #result h2 {
+            color: wheat;
+        }
+        /* Estilos para el botón "Quiero el viaje" */
+        #action-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #action-section button {
+            background-color: #2a3c52;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #action-section button:hover {
+            background-color: #2a3c52;
+        }
+        /* Estilos para el formulario de datos personales */
+        #personal-info-section input,
+        #personal-info-section select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+    </style>
+</head>
+<body>
+
+<header>
+    <!-- Ruta URL para el logo -->
+    <img src=<a href="https://ibb.co/XmWVcCJ"><img src="https://i.ibb.co/XmWVcCJ/Logo.png" alt="Logo" border="0"></a>>
+    <h1>¡TravelBank lo hace facil y accesible!</h1>
+    <p>La mejor opcion para hacer realidad tus viajes </p>
+    <style>
+        header img {
+            height: 275px; /* Aquí aumentamos el tamaño del logo */
+            vertical-align: middle;
+        }
+        header h1 {
+            display: inline;
+            margin-left: 10px;
+            font-size: 36px;
+            vertical-align: middle;
+        }
+    </style>    
+</header>
+
+<main>
+    <div class="options">
+        <button onclick="chooseTrip('nacional')">Viaje Nacional</button>
+        <button onclick="chooseTrip('internacional')">Viaje Internacional</button>
+    </div>
+
+    <div id="destination-section" class="form-section">
+        <label for="destination">Seleccione su destino:</label>
+        <select id="destination"></select>
+    </div>
+
+    <div id="city-section" class="form-section">
+        <label for="city">Seleccione la ciudad:</label>
+        <select id="city"></select>
+    </div>
+
+    <div id="details-section" class="form-section">
+        <label for="numPeople">Número de personas que viajan:</label>
+        <input type="number" id="numPeople" min="1" value="1">
+
+        <label for="numDays">Número de días de estancia:</label>
+        <input type="number" id="numDays" min="1" value="1">
+
+        <label for="travelMonth">Mes en el que planea hacer el viaje:</label>
+        <input type="month" id="travelMonth">
+
+        <button onclick="calculateSavings()">Calcular Ahorro Mensual</button>
+    </div>
+
+    <div id="result" class="form-section">
+        <h2>Resultado</h2>
+        <p id="resultText"></p>
+        <div id="action-section">
+            <button onclick="continueProcess()">Quiero el viaje</button>
+        </div>
+    </div>
+
+    <div id="personal-info-section" class="form-section">
+        <h2>Datos Personales</h2>
+        <label for="firstName">Nombres:</label>
+        <input type="text" id="firstName">
+
+        <label for="lastName">Apellidos:</label>
+        <input type="text" id="lastName">
+
+        <label for="documentType">Tipo de Documento:</label>
+        <select id="documentType">
+            <option value="cedula">Cédula</option>
+            <option value="cedula_extranjeria">Cédula de Extranjería</option>
+        </select>
+
+        <label for="documentNumber">Número de Documento:</label>
+        <input type="text" id="documentNumber">
+
+        <label for="birthDate">Fecha de Nacimiento:</label>
+        <input type="date" id="birthDate">
+
+        <label for="issueDate">Fecha de Expedición del Documento:</label>
+        <input type="date" id="issueDate">
+
+        <label for="phoneNumber">Número de Teléfono:</label>
+        <input type="tel" id="phoneNumber">
+
+        <button onclick="showCodeSection()">Continuar</button>
+    </div>
+
+    <div id="code-section" class="form-section">
+        <h2>Verificación de Código</h2>
+        <label for="code">Ingrese Código:</label>
+        <input type="text" id="code">
+
+        <button onclick="validateCode()">Continuar</button>
+    </div>
+
+    <div id="payment-plan-section" class="form-section">
+        <h2>Plan de Pagos</h2>
+        <p id="paymentPlanText"></p>
+    </div>
+</main>
+
+<script>
+    // Datos de los destinos y costos (simplificado para este ejemplo)
+    const data = {
+        nacional: {
+            'Bogotá': { flight: 247400, hotelPerNight: 150000, tourPerDay: 75000 },
+            'Cartagena': { flight: 382040, hotelPerNight:200000, tourPerDay: 200000 },
+            'Medellín': { flight: 247400, hotelPerNight:70000, tourPerDay: 70000 },
+            'Cali': { flight:308490 , hotelPerNight: 70000, tourPerDay: 75000 },
+            'Barranquilla': { flight:280400, hotelPerNight: 300000, tourPerDay: 100000 },
+            'San Andres': { flight: 707800, hotelPerNight: 200000, tourPerDay: 150000 },
+            'Santa Marta': { flight: 381570, hotelPerNight: 150000, tourPerDay: 150000 },
+            'Eje cafetero': { flight: 241470, hotelPerNight: 100000, tourPerDay: 200000 },
+            'Guajira': { flight: 522400 , hotelPerNight: 80000, tourPerDay: 70000 },
+            'choco': { flight:206800 , hotelPerNight: 600000, tourPerDay: 80000 },
+            'Amazonas': { flight:718800 , hotelPerNight: 1000000, tourPerDay: 90000 },
+        },
+        internacional: {
+          'México': {
+                'Ciudad de México': { flight: 1070101, hotelPerNight:275000, tourPerDay: 75000},
+                'Cancún': { flight: 998335, hotelPerNight: 300000, tourPerDay: 200000 },
+                'Guadalajara': { flight: 1316218, hotelPerNight: 200000, tourPerDay: 60000 },
+                'Monterrey': { flight: 1456365, hotelPerNight: 170000, tourPerDay: 60000 }
+            },
+            'España': {
+                'Madrid': { flight: 2532350, hotelPerNight: 270000, tourPerDay: 200000 },
+                'Barcelona': { flight:2618440 , hotelPerNight: 300000, tourPerDay: 200000 },
+                'Sevilla': { flight: 2946120, hotelPerNight: 250000, tourPerDay: 175000},
+                'Valencia': { flight:2530610 , hotelPerNight: 330000, tourPerDay: 200000 }
+            },
+            'Francia': {
+                'Paris': { flight: 3645840, hotelPerNight: 400000, tourPerDay: 250000 },
+                'Niza': { flight: 3178260, hotelPerNight: 310000, tourPerDay: 210000 },
+                'Marsella': { flight: 4182790 , hotelPerNight: 315000, tourPerDay: 230000 },
+                'Burdeus': { flight: 3919020, hotelPerNight: 290000, tourPerDay: 195000 }
+            },
+            'Italia': {
+                'Roma': { flight: 3126910, hotelPerNight: 345000, tourPerDay: 217000},
+                'Milán': { flight:3229320 , hotelPerNight: 387000, tourPerDay: 235000 },
+                'Sena': { flight: 2090243, hotelPerNight: 295000, tourPerDay: 198000 },
+                'Florencia': { flight:5314910 , hotelPerNight: 356000, tourPerDay: 213000 }
+            },
+            'Turquia': {
+                'Estambul': { flight: 4819012, hotelPerNight: 250000, tourPerDay: 200000 },
+                'Capadocia': { flight:6618380 , hotelPerNight: 210000, tourPerDay: 145000 },
+                'Éfesto': { flight:2450678 , hotelPerNight: 300000, tourPerDay: 185000 },
+                'Antalya': { flight: 3890567, hotelPerNight: 300000, tourPerDay: 190000 }
+            },
+            'Perú': {
+                'Iquitos': { flight: 1488930, hotelPerNight: 145000, tourPerDay: 94000 },
+                'Arequipa': { flight:1453120 , hotelPerNight: 175000, tourPerDay: 90000 },
+                'Piura': { flight:1487730 , hotelPerNight: 120000, tourPerDay: 80000 },
+                'Machu Picchu': { flight:1050120 , hotelPerNight: 175000, tourPerDay: 235000 }
+            },
+            'Argentina': {
+                'Buenos Aires': { flight:2350930 , hotelPerNight:145000 , tourPerDay: 110000},
+                'Bariloche': { flight:2746120 , hotelPerNight: 195000, tourPerDay: 145000 },
+                'Mendoza': { flight:2261140 , hotelPerNight: 156000, tourPerDay: 135000 },
+                'Cordoba': { flight:2693560 , hotelPerNight: 134000, tourPerDay: 120000 }
+            },
+            'China': {
+                'Pekín': { flight: 6717340, hotelPerNight: 250000, tourPerDay: 180000 },
+                'Shanghái': { flight:8256580 , hotelPerNight: 280000, tourPerDay: 200000 },
+                'Cantón': { flight:8259575 , hotelPerNight: 275000, tourPerDay: 185000 },
+                'Hong Kong': { flight:6202970 , hotelPerNight: 440000, tourPerDay: 250000 }
+            },
+            'Grecia': {
+                'Corfú': { flight: 4754530, hotelPerNight:385000 , tourPerDay: 242000 },
+                'Atenas': { flight: 2557910, hotelPerNight: 350000, tourPerDay: 200000},
+                'Santorini': { flight: 4606940, hotelPerNight: 440000, tourPerDay: 275000 },
+                'Kalambaka': { flight:3251650 , hotelPerNight: 330000, tourPerDay: 176000 }
+            },
+            'Alemania': {
+                'Berlín': { flight: 3129300, hotelPerNight: 36000, tourPerDay: 198000 },
+                'Múnich': { flight: 3235810, hotelPerNight: 385000, tourPerDay: 198000 },
+                'Hamburgo': { flight:3342820 , hotelPerNight: 360000, tourPerDay: 200000},
+                'Colonia': { flight:4279060 , hotelPerNight: 330000, tourPerDay: 190000 }
+            },
+            'Brasil': {
+                'Sao Paulo': { flight:1665510 , hotelPerNight: 160000, tourPerDay: 120000 },
+                'Río de Janeiro': { flight:939591 , hotelPerNight: 150000, tourPerDay:12000  },
+                'Florianólopis': { flight: 1893900, hotelPerNight: 170000, tourPerDay: 125000 },
+                'Porto Alegre': { flight:2243120 , hotelPerNight: 200000, tourPerDay: 90000}
+            }
+        }
+    };
+
+    let tripType = '';
+    let selectedDestination = '';
+    let selectedCity = '';
+    const interestRate = 0.02; // 2% interés mensual que se abona al usuario
+    let monthsLeft = 0;
+    let adjustedSavings = 0;
+    let paymentDates = [];
+
+    function chooseTrip(type) {
+        tripType = type;
+        document.getElementById('destination').innerHTML = '';
+        let destinations = type === 'nacional' ? Object.keys(data.nacional) : Object.keys(data.internacional);
+        destinations.forEach(dest => {
+            let option = document.createElement('option');
+            option.value = dest;
+            option.textContent = dest;
+            document.getElementById('destination').appendChild(option);
+        });
+        document.getElementById('destination-section').style.display = 'block';
+        document.getElementById('city-section').style.display = 'none';
+        document.getElementById('details-section').style.display = 'none';
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('personal-info-section').style.display = 'none';
+        document.getElementById('code-section').style.display = 'none';
+        document.getElementById('payment-plan-section').style.display = 'none';
+    }
+
+    document.getElementById('destination').addEventListener('change', function() {
+        selectedDestination = this.value;
+        if (tripType === 'internacional') {
+            document.getElementById('city').innerHTML = '';
+            let cities = Object.keys(data.internacional[selectedDestination]);
+            cities.forEach(city => {
+                let option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                document.getElementById('city').appendChild(option);
+            });
+            document.getElementById('city-section').style.display = 'block';
+        } else {
+            selectedCity = selectedDestination;
+            document.getElementById('city-section').style.display = 'none';
+            document.getElementById('details-section').style.display = 'block';
+        }
+    });
+
+    document.getElementById('city').addEventListener('change', function() {
+        selectedCity = this.value;
+        document.getElementById('details-section').style.display = 'block';
+    });
+
+    function calculateSavings() {
+        let numPeople = parseInt(document.getElementById('numPeople').value);
+        let numDays = parseInt(document.getElementById('numDays').value);
+        let travelMonth = document.getElementById('travelMonth').value;
+
+        if (!travelMonth) {
+            alert('Por favor, seleccione el mes en el que planea hacer el viaje.');
+            return;
+        }
+
+        let today = new Date();
+        let travelDate = new Date(travelMonth + '-01');
+        monthsLeft = (travelDate.getFullYear() - today.getFullYear()) * 12 + (travelDate.getMonth() - today.getMonth());
+
+        if (monthsLeft <= 0) {
+            alert('El mes de viaje debe ser posterior al mes actual.');
+            return;
+        }
+
+        // Obtener costos
+        let destinationData;
+        if (tripType === 'nacional') {
+            destinationData = data.nacional[selectedCity];
+        } else {
+            destinationData = data.internacional[selectedDestination][selectedCity];
+        }
+
+        let totalFlightCost = destinationData.flight * numPeople;
+        let totalHotelCost = destinationData.hotelPerNight * numDays * numPeople;
+        let totalTourCost = destinationData.tourPerDay * numDays * numPeople;
+        let totalCost = totalFlightCost + totalHotelCost + totalTourCost;
+
+        // Calcular ahorro mensual requerido
+        let monthlySavings = totalCost / monthsLeft;
+
+        // Ajustar por interés que se abona al usuario
+        adjustedSavings = monthlySavings * (1 - interestRate);
+
+        // Generar fechas de pago
+        paymentDates = [];
+        for (let i = 1; i <= monthsLeft; i++) {
+            let paymentDate = new Date();
+            paymentDate.setMonth(paymentDate.getMonth() + i);
+            paymentDates.push(paymentDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long' }));
+        }
+
+        let resultText = `
+            <strong>Destino:</strong> ${selectedCity} (${selectedDestination})<br>
+            <strong>Número de Personas:</strong> ${numPeople}<br>
+            <strong>Número de Días:</strong> ${numDays}<br>
+            <strong>Fecha del Viaje:</strong> ${travelDate.toLocaleString('es-ES', { month: 'long', year: 'numeric' })}<br>
+            <strong>Total a Ahorrar:</strong> $${totalCost.toFixed(2)}<br>
+            <strong>Meses Restantes:</strong> ${monthsLeft}<br>
+            <strong>Ahorro Mensual Requerido:</strong> $${adjustedSavings.toFixed(2)}<br>
+            <em>(Considerando un interés del ${interestRate * 100}% que se abona a su cuenta)</em>
+        `;
+        document.getElementById('resultText').innerHTML = resultText;
+        document.getElementById('result').style.display = 'block';
+    }
+
+    function continueProcess() {
+        document.getElementById('personal-info-section').style.display = 'block';
+        document.getElementById('payment-plan-section').style.display = 'none';
+    }
+
+    function showCodeSection() {
+        // Validar que los campos de datos personales estén llenos (opcional)
+        // Ocultar sección de datos personales y mostrar sección de código
+        document.getElementById('personal-info-section').style.display = 'none';
+        document.getElementById('code-section').style.display = 'block';
+    }
+
+    function validateCode() {
+        let code = document.getElementById('code').value.trim();
+        if (code !== 'ING3C0') {
+            alert('Código incorrecto. Por favor, inténtelo nuevamente.');
+            return;
+        }
+        // Mostrar plan de pagos después de validar el código
+        document.getElementById('code-section').style.display = 'none';
+        let paymentPlanText = '<strong>Plan de Pagos:</strong><br><ul>';
+        paymentDates.forEach((date, index) => {
+            paymentPlanText += `<li>Cuota ${index + 1} - Fecha de Pago: ${date} - Valor: $${adjustedSavings.toFixed(2)}</li>`;
+        });
+        paymentPlanText += '</ul>';
+        document.getElementById('paymentPlanText').innerHTML = paymentPlanText;
+        document.getElementById('payment-plan-section').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
